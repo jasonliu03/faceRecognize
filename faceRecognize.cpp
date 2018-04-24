@@ -9,13 +9,19 @@ using namespace cv;
 using namespace std;  
   
   
-int main()   
+int main(int argc, char** argv)   
 {  
+    char* imgName = "test.jpg";
+    if(argc == 2)
+    {
+       imgName = argv[1];
+    }   
   
   
     // 下面的几行代码仅仅是从你的数据集中移除最后一张图片  
     //[gm:自然这里需要根据自己的需要修改，他这里简化了很多问题]  
-    Mat testSample = imread("./att_faces/s40/3.pgm", 0);
+    Mat testSample = imread(imgName, 0);
+    resize(testSample, testSample, cvSize(92, 112));
     imshow("test", testSample);
     // 下面几行创建了一个特征脸模型用于人脸识别，  
     // 通过CSV文件读取的图像和标签训练它。  

@@ -18,8 +18,8 @@ static Mat norm_0_255(InputArray _src) {
         break;  
     case3:  
         cv::normalize(_src, dst, 0, 255, NORM_MINMAX, CV_8UC3);  
-        break;  
-    default:  
+        break;
+    default:
         src.copyTo(dst);  
         break;  
     }  
@@ -76,8 +76,8 @@ int main()
   
     // 下面的几行代码仅仅是从你的数据集中移除最后一张图片  
     //[gm:自然这里需要根据自己的需要修改，他这里简化了很多问题]  
-    Mat testSample = images[images.size() - 4];  
-    int testLabel = labels[labels.size() - 4];  
+    Mat testSample = images[images.size() - 1];  
+    int testLabel = labels[labels.size() - 1];  
     images.pop_back();  
     labels.pop_back();  
     // 下面几行创建了一个特征脸模型用于人脸识别，  
