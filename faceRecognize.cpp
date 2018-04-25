@@ -1,4 +1,3 @@
-//#include "stdafx.h"  
 #include <opencv2/opencv.hpp>  
 #include <iostream>  
 #include <fstream>  
@@ -7,7 +6,40 @@
   
 using namespace cv;  
 using namespace std;  
+
+/** Global variables */  
+String face_cascade_name = "haarcascade_frontalface_default.xml";  
+String eyes_cascade_name = "haarcascade_eye_tree_eyeglasses.xml";  
+CascadeClassifier face_cascade;   
+CascadeClassifier eyes_cascade;  
+String window_name = "Capture - Face detection";  
   
+Mat detectAndDisplay(Mat frame)  
+{  
+    std::vector<Rect> faces;  
+    Mat frame_gray;  
+  
+    cvtColor(frame, frame_gray, COLOR_BGR2GRAY);  
+    equalizeHist(frame_gray, frame_gray);  
+  
+    //-- Detect faces  
+    face_cascade.detectMultiScale(frame_gray, faces, 1.1, 3, CV_HAAR_DO_ROUGH_SEARCH, Size(50, 50),Size(2000,2000));  
+
+    Mat faceROI = frame_gray;
+  
+    for (size_t i = 0; i < faces.size(); i++)  
+    {  
+        rectangle(frame, faces[i],Scalar(255,0,0),2,8,0);  
+        cout << faces[i] << endl; 
+          
+        faceROI = frame_gray(faces[i]);  
+        imwrite("faceROI.jpg", faceROI);
+    }  
+    //-- Show what you got  
+    namedWindow(window_name, 2);  
+    imshow(window_name, frame);  
+    return faceROI;
+}  
   
 int main(int argc, char** argv)   
 {  
@@ -17,23 +49,12 @@ int main(int argc, char** argv)
        imgName = argv[1];
     }   
   
-  
-    // ÏÂÃæµÄ¼¸ÐÐ´úÂë½ö½öÊÇ´ÓÄãµÄÊý¾Ý¼¯ÖÐÒÆ³ý×îºóÒ»ÕÅÍ¼Æ¬  
-    //[gm:×ÔÈ»ÕâÀïÐèÒª¸ù¾Ý×Ô¼ºµÄÐèÒªÐÞ¸Ä£¬ËûÕâÀï¼ò»¯ÁËºÜ¶àÎÊÌâ]  
-    Mat testSample = imread(imgName, 0);
-    resize(testSample, testSample, cvSize(92, 112));
-    imshow("test", testSample);
-    // ÏÂÃæ¼¸ÐÐ´´½¨ÁËÒ»¸öÌØÕ÷Á³Ä£ÐÍÓÃÓÚÈËÁ³Ê¶±ð£¬  
-    // Í¨¹ýCSVÎÄ¼þ¶ÁÈ¡µÄÍ¼ÏñºÍ±êÇ©ÑµÁ·Ëü¡£  
-    // TÕâÀïÊÇÒ»¸öÍêÕûµÄPCA±ä»»  
-    //Èç¹ûÄãÖ»Ïë±£Áô10¸öÖ÷³É·Ö£¬Ê¹ÓÃÈçÏÂ´úÂë  
-    //      cv::createEigenFaceRecognizer(10);  
-    //  
-    // Èç¹ûÄã»¹Ï£ÍûÊ¹ÓÃÖÃÐÅ¶ÈãÐÖµÀ´³õÊ¼»¯£¬Ê¹ÓÃÒÔÏÂÓï¾ä£º  
-    //      cv::createEigenFaceRecognizer(10, 123.0);  
-    //  
-    // Èç¹ûÄãÊ¹ÓÃËùÓÐÌØÕ÷²¢ÇÒÊ¹ÓÃÒ»¸öãÐÖµ£¬Ê¹ÓÃÒÔÏÂÓï¾ä£º  
-    //      cv::createEigenFaceRecognizer(0, 123.0);  
+    if (!face_cascade.load(face_cascade_name)){ printf("--(!)Error loading face cascade\n"); return -1; };  
+
+    Mat testSample = imread(imgName, 1);
+    Mat faceROI = detectAndDisplay(testSample);
+    resize(faceROI, faceROI, cvSize(92, 112));
+    
       
     Ptr<FaceRecognizer> model = createEigenFaceRecognizer();  
     model->load("MyFacePCAModel.xml");  
@@ -44,20 +65,29 @@ int main(int argc, char** argv)
     Ptr<FaceRecognizer> model2 = createLBPHFaceRecognizer();  
     model2->load("MyFaceLBPHModel.xml");  
  
-    // ÏÂÃæ¶Ô²âÊÔÍ¼Ïñ½øÐÐÔ¤²â£¬predictedLabelÊÇÔ¤²â±êÇ©½á¹û  
-    int predictedLabel = model->predict(testSample);  
-    int predictedLabel1 = model1->predict(testSample);  
-    int predictedLabel2 = model2->predict(testSample);  
+    int predictedLabel = model->predict(faceROI);  
+    int predictedLabel1 = model1->predict(faceROI);  
+    int predictedLabel2 = model2->predict(faceROI);  
   
-    // »¹ÓÐÒ»ÖÖµ÷ÓÃ·½Ê½£¬¿ÉÒÔ»ñÈ¡ç??¹ûÍ¬Ê±µÃµ½ãÐÖµ:  
-    //      int predictedLabel = -1;  
-    //      double confidence = 0.0;  
-    //      model->predict(testSample, predictedLabel, confidence);  
-      
     cout << predictedLabel << endl;  
     cout << predictedLabel1 << endl;  
     cout << predictedLabel2 << endl;  
-  
+
+    int result = -1;
+    if(predictedLabel == predictedLabel1)
+    {
+       result = predictedLabel; 
+    }
+    if(predictedLabel == predictedLabel2)
+    {
+       result = predictedLabel; 
+    }
+    if(predictedLabel1 == predictedLabel2)
+    {
+       result = predictedLabel1; 
+    }
+
+    cout << "result:" << result << endl;
     waitKey(0);  
-    return 0;  
+    return result;  
 }  
