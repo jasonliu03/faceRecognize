@@ -42,6 +42,7 @@ if __name__ == "__main__":
   
     #BASE_PATH=sys.argv[1]  
     BASE_PATH="./att_faces"  
+    print "Note: src dir will be overwritted!"
       
     for dirname, dirnames, filenames in os.walk(BASE_PATH):  
         for subdirname in dirnames:  
