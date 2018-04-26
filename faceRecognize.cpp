@@ -13,6 +13,9 @@ String eyes_cascade_name = "haarcascade_eye_tree_eyeglasses.xml";
 CascadeClassifier face_cascade;   
 CascadeClassifier eyes_cascade;  
 String window_name = "Capture - Face detection";  
+
+static const int FACE_WIDTH = 200;
+static const int FACE_HEIGHT = 200;
   
 Mat detectAndDisplay(Mat frame)  
 {  
@@ -53,7 +56,7 @@ int main(int argc, char** argv)
 
     Mat testSample = imread(imgName, 1);
     Mat faceROI = detectAndDisplay(testSample);
-    resize(faceROI, faceROI, cvSize(92, 112));
+    resize(faceROI, faceROI, cvSize(FACE_WIDTH, FACE_HEIGHT));
     
       
     Ptr<FaceRecognizer> model = createEigenFaceRecognizer();  
@@ -65,13 +68,32 @@ int main(int argc, char** argv)
     Ptr<FaceRecognizer> model2 = createLBPHFaceRecognizer();  
     model2->load("MyFaceLBPHModel.xml");  
  
-    int predictedLabel = model->predict(faceROI);  
-    int predictedLabel1 = model1->predict(faceROI);  
-    int predictedLabel2 = model2->predict(faceROI);  
+    //double current_threshold = model->getDouble("threshold");
+    //double current_threshold1 = model1->getDouble("threshold");
+    //double current_threshold2 = model2->getDouble("threshold");
+    //cout << current_threshold << endl;  
+    //cout << current_threshold1 << endl;  
+    //cout << current_threshold2 << endl;  
+
+    int predictedLabel = 0;
+    int predictedLabel1 = 0;
+    int predictedLabel2 = 0;
+    double confidence = 0.0;
+    double confidence1 = 0.0;
+    double confidence2 = 0.0;
+    model->predict(faceROI, predictedLabel, confidence);  
+    cout << predictedLabel << " " << confidence << endl;
+    model1->predict(faceROI, predictedLabel1, confidence1);  
+    cout << predictedLabel1 << " " << confidence1 << endl;
+    model2->predict(faceROI, predictedLabel2, confidence2);  
+    cout << predictedLabel2 << " " << confidence2 << endl;
   
-    cout << predictedLabel << endl;  
-    cout << predictedLabel1 << endl;  
-    cout << predictedLabel2 << endl;  
+    //int predictedLabel = model->predict(faceROI);  
+    //int predictedLabel1 = model1->predict(faceROI);  
+    //int predictedLabel2 = model2->predict(faceROI);  
+    //cout << predictedLabel << endl;  
+    //cout << predictedLabel1 << endl;  
+    //cout << predictedLabel2 << endl;  
 
     int result = -1;
     if(predictedLabel == predictedLabel1)
