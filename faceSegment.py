@@ -24,6 +24,9 @@ def faceDetect(imgPath):
             roi_color = img[y:y+h,x:x+w]  
             
             cv2.imwrite(imgPath, roi_color)
+    else:
+        print "remove img:", imgPath
+        os.remove(imgPath)
       
     #        eyes = eye_cascade.detectMultiScale(roi_gray,1.1,1,cv2.CASCADE_SCALE_IMAGE,(2,2))  
     #        for (ex,ey,ew,eh) in eyes:  

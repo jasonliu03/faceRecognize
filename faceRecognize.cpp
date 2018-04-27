@@ -36,6 +36,7 @@ Mat detectAndDisplay(Mat frame)
         cout << faces[i] << endl; 
           
         faceROI = frame_gray(faces[i]);  
+        equalizeHist(faceROI, faceROI);  
         imwrite("faceROI.jpg", faceROI);
     }  
     //-- Show what you got  
