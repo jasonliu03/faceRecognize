@@ -39,7 +39,9 @@ static void read_csv(const string& filename, vector<Mat>& images, vector<int>& l
         getline(liness, path, separator);  
         getline(liness, classlabel);  
         if (!path.empty() && !classlabel.empty()) {  
-            images.push_back(imread(path, 0));  
+            Mat src = imread(path, 0);
+            cv::equalizeHist(src, src);
+            images.push_back(src);  
             labels.push_back(atoi(classlabel.c_str()));  
         }  
     }  

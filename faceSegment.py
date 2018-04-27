@@ -5,8 +5,8 @@ import numpy as np
 import cv2  
   
 def faceDetect(imgPath):  
-    face_cascade = cv2.CascadeClassifier("./haarcascade_frontalface_default.xml")  
-    #face_cascade = cv2.CascadeClassifier("./haarcascade_frontalface_alt2.xml")  
+    #face_cascade = cv2.CascadeClassifier("./haarcascade_frontalface_default.xml")  
+    face_cascade = cv2.CascadeClassifier("./haarcascade_frontalface_alt2.xml")  
     #eye_cascade = cv2.CascadeClassifier("./haarcascade_eye_tree_eyeglasses.xml")  
     
     img = cv2.imread(imgPath)  

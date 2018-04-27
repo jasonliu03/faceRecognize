@@ -8,7 +8,7 @@ using namespace cv;
 using namespace std;  
 
 /** Global variables */  
-String face_cascade_name = "haarcascade_frontalface_default.xml";  
+String face_cascade_name = "haarcascade_frontalface_alt2.xml";  
 String eyes_cascade_name = "haarcascade_eye_tree_eyeglasses.xml";  
 CascadeClassifier face_cascade;   
 CascadeClassifier eyes_cascade;  
@@ -96,18 +96,18 @@ int main(int argc, char** argv)
     //cout << predictedLabel2 << endl;  
 
     int result = -1;
-    if(predictedLabel == predictedLabel1)
-    {
-       result = predictedLabel; 
-    }
+    //if(predictedLabel == predictedLabel1)
+    //{
+    //   result = predictedLabel; 
+    //}
     if(predictedLabel == predictedLabel2)
     {
        result = predictedLabel; 
     }
-    if(predictedLabel1 == predictedLabel2)
-    {
-       result = predictedLabel1; 
-    }
+    //if(predictedLabel1 == predictedLabel2)
+    //{
+    //   result = predictedLabel1; 
+    //}
 
     cout << "result:" << result << endl;
     waitKey(0);  
