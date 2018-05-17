@@ -5,8 +5,8 @@ import numpy as np
 import cv2  
   
 def faceDetect(imgPath):  
-    #face_cascade = cv2.CascadeClassifier("./haarcascade_frontalface_default.xml")  
-    face_cascade = cv2.CascadeClassifier("./haarcascade_frontalface_alt2.xml")  
+    face_cascade = cv2.CascadeClassifier("./haarcascade_frontalface_default.xml")  
+    #face_cascade = cv2.CascadeClassifier("./haarcascade_frontalface_alt2.xml")  
     #eye_cascade = cv2.CascadeClassifier("./haarcascade_eye_tree_eyeglasses.xml")  
     
     img = cv2.imread(imgPath)  
@@ -43,13 +43,28 @@ if __name__ == "__main__":
     #    print "usage: create_csv <base_path>"  
     #    sys.exit(1)  
   
-    #BASE_PATH=sys.argv[1]  
     BASE_PATH="./att_faces"  
-    print "Note: src dir will be overwritted!"
+    if len(sys.argv) == 2:
+        BASE_PATH=sys.argv[1]  
+    print "BASE_PATH:", BASE_PATH
+        
+    print "Note: src dir will be overwritted!, continue? Y or N"
+    c = raw_input()
+    if c == 'Y':
+        pass
+    else:
+        exit(-1)
       
     for dirname, dirnames, filenames in os.walk(BASE_PATH):  
-        for subdirname in dirnames:  
-            subject_path = os.path.join(dirname, subdirname)  
+        if dirnames:
+            for subdirname in dirnames:  
+                subject_path = os.path.join(dirname, subdirname)  
+                for filename in os.listdir(subject_path):  
+                    abs_path = "%s/%s" % (subject_path, filename)  
+                    print "abs_path:", abs_path
+                    faceDetect(abs_path)
+        else:
+            subject_path = dirname
             for filename in os.listdir(subject_path):  
                 abs_path = "%s/%s" % (subject_path, filename)  
                 print "abs_path:", abs_path
